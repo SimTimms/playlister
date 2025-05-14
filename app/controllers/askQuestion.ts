@@ -5,17 +5,8 @@ import getArtistDetails from '../utils/getArtistDetails';
 import getTopTracks from '../utils/getTopTracks';
 import { ArtistDetailsType } from '../utils/getArtistDetails';
 
-interface AskQuestionRequest extends Request {
-  body: {
-    question: string;
-  };
-}
-
-const askQuestion = async (
-  req: AskQuestionRequest,
-  res: Response,
-  next: NextFunction
-) => {
+const askQuestion = async (req: Request, res: Response, next: NextFunction) => {
+  const playlistId = req.params.playlistid;
   try {
     //https://open.spotify.com/playlist/4z56A77P0onHJOgItRGR2W?si=f1f56fe26d484290
     // const playlistId = '4z56A77P0onHJOgItRGR2W'; //  Luke;
@@ -27,7 +18,6 @@ const askQuestion = async (
     //const playlistId = '7gobrIxFHBcPKlZfRYRBN1'; //Bean
     //const playlistId = '5syAOZdtRs7vk82rzYfq1R'; //Ed
     //const playlistId = '3gS4Gq1iv442Dp8NPkS888';
-    const playlistId = '3V1tvYLZ8TodrWzJukaZzL'; //Phil
     //const playlistId = '3g2AIxdNdLLcWHVOuVxBXg'; //Yakop
     //open.spotify.com/playlist/3V1tvYLZ8TodrWzJukaZzL?si=ab3772b9e0074f31
     //open.spotify.com/playlist/3gS4Gq1iv442Dp8NPkS888?si=74d291d0042e4107

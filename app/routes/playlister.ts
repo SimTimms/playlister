@@ -8,6 +8,6 @@ playlistRouter.get('/health', (_: Request, res: Response) => {
   res.status(200).json({ message: 'OK' });
 });
 
-playlistRouter.get('/ask', askQuestion);
+playlistRouter.get('/ask/:playlistid', askQuestion);
 
 export default playlistRouter;

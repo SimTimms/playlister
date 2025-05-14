@@ -2,7 +2,7 @@ import { getCachedData } from '../redis/helpers';
 import { setCachedData } from '../redis/helpers';
 import getBearer from './getBearerToken';
 
-const CACHE_EXPIRATION = 86400;
+const CACHE_EXPIRATION = 600;
 
 type ArtistType = string;
 
@@ -10,7 +10,7 @@ const getPlaylistDetails = async (playlistId: string): Promise<string[]> => {
   const cacheKey = `playlistIdBBC:${playlistId}`;
   const cachedUniqueIds = await getCachedData(cacheKey);
   if (cachedUniqueIds) {
-    // return cachedUniqueIds.split(',');
+    return cachedUniqueIds.split(',');
   }
 
   async function fetchDetail(
@@ -19,7 +19,6 @@ const getPlaylistDetails = async (playlistId: string): Promise<string[]> => {
   ): Promise<ArtistType[]> {
     try {
       const bearer = await getBearer();
-      console.log(bearer);
       const response = fetch(
         `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`,
         {
