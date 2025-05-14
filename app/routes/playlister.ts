@@ -1,6 +1,5 @@
-import express, { Router, Response, Request } from 'express';
-import { validateRequest } from '../validators';
-import handleValidationErrors from '../middleware/handleValidationErrors';
+import { Router, Response, Request } from 'express';
+
 import askQuestion from '../controllers/askQuestion';
 
 const playlistRouter = Router();

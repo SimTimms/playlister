@@ -1,44 +1,67 @@
-export type AlbumType = {
-  album: string;
-  uri: string;
+import { ArtistDetailsType } from './getArtistDetails';
+import { getCachedData } from '../redis/helpers';
+import { setCachedData } from '../redis/helpers';
+import getBearer from './getBearerToken';
+
+const CACHE_EXPIRATION = 86400;
+
+export type AlbumType = string;
+
+export type CombinedArtistType = {
+  artist: ArtistDetailsType;
+  tracks: AlbumType[];
 };
 
-import { ArtistDetailsType } from './getArtistDetails';
-
 const getTopTracks = async (
-  bearer: string,
-  artistId: string
-): Promise<AlbumType[]> => {
+  artist: ArtistDetailsType
+): Promise<CombinedArtistType> => {
   try {
-    const response = fetch(
-      `https://api.spotify.com/v1/artists/${artistId}/top-tracks`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${bearer}`,
-        },
+    async function response(artistId: string): Promise<AlbumType[]> {
+      const cacheKey = `artistTracksIdsBB:${artistId}`;
+      const cachedTracks = await getCachedData(cacheKey);
+      if (cachedTracks) {
+        return cachedTracks.split(',');
       }
-    )
-      .then((response) => response.json())
-      .then((data: any) => {
-        const tracks = data.tracks.map((track: any) => {
-          console.log('Response:', track);
-          return {
-            album: track.album.name,
-            uri: track.album.uri,
-          };
+      const bearer = await getBearer();
+
+      const tracks: AlbumType[] = await fetch(
+        `https://api.spotify.com/v1/artists/${artistId}/top-tracks`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${bearer.token}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then(async (data: any): Promise<AlbumType[]> => {
+          if (!data.tracks) {
+            return [];
+          }
+          const tracks: AlbumType[] = data.tracks.map(
+            (track: any): AlbumType => {
+              return `${track.name}|${track.uri}`;
+            }
+          );
+          await setCachedData(cacheKey, tracks.join(','), CACHE_EXPIRATION);
+          return tracks;
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          return [];
         });
-        return tracks;
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-    return await response;
+
+      return tracks;
+    }
+
+    const tracks = await response(artist.id);
+    return { artist: { ...artist }, tracks: tracks };
   } catch (error) {
     console.error('Error:', error);
+    return { artist: { ...artist }, tracks: [] };
   }
-  return [];
+  return { artist: { ...artist }, tracks: [] };
 };
 
 export default getTopTracks;

@@ -3,9 +3,8 @@ import { LOG_TYPES } from '../types/enums';
 import { setCachedData } from '../redis/helpers';
 import escalateToHuman from './escalateToHuman';
 import handleRefund from './handleRefund';
-import e from 'cors';
 
-const CACHE_EXPIRATION = 3600;
+const CACHE_EXPIRATION = 86400;
 
 const responseHandler = async (
   question: string,
@@ -21,7 +20,6 @@ const responseHandler = async (
   if (!isCached) {
     await setCachedData(cacheKey, aiAnswer, CACHE_EXPIRATION);
   }
-  console.log('Response Handler: ', emailAddress);
   if (
     adjustedAiAnswer.indexOf(LOG_TYPES.ESCALATE) > -1 ||
     adjustedAiAnswer.indexOf(LOG_TYPES.NO_RESPONSE) > -1 ||

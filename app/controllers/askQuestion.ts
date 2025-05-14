@@ -12,7 +12,7 @@ interface AskQuestionRequest extends Request {
 }
 
 const bearer =
-  'BQDb8F8C0khfckmTvFojPt72hKuFNOs91xPREDiE-t_ZSBhzDBKHpD5yatp7du1agck4mBz5zn2YkjvNeXtHPRkaJi6KNUsngwG4ecTAty4F_SvYiiW-hLRZd-Sbo36Xq7Nm1dHuxFoeEgBAYdI5qYMr24OjNzi99TSOJJFkGuSVGW1asa1cd79uD3QKRy_eduKE-gw3_d-cqECKLatnGk76RlfM_hcNPZBZjm4cGHohKdi3jcxXB_00xGqkLet6qSMyX0Vv--Jec8WyPNkikN3FB7rscCXCrbZoL6kFEEcOMw';
+  'BQC09Zg4UNOKMfs8SL0aFHcQ9Ktmrqfy4Z-zrX8jCeLztxzI68Sy6cw7n1InGITgZ_1H81kkx_BO7pyOCirg9Blv2Z_NAy8qtwXXR86tUJtYCExNFa5h02voKK-qLiOX3CJ_Zip3B6s';
 
 const askQuestion = async (
   req: AskQuestionRequest,
@@ -22,22 +22,41 @@ const askQuestion = async (
   const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
-  try {
-    getPlaylistDetails(bearer)
-      .then((artists: any[]) => {
-        const artistIds = artists.map((artist: any) => artist.id).slice(0, 49);
 
+  try {
+    //https://open.spotify.com/playlist/4z56A77P0onHJOgItRGR2W?si=f1f56fe26d484290
+    // const playlistId = '4z56A77P0onHJOgItRGR2W'; //  Luke;
+
+    //open.spotify.com/playlist/3g2AIxdNdLLcWHVOuVxBXg?si=f3a37438400742a1
+
+    // const playlistId = '19ogylHUc5PIkdS0jH8F4V';//TGE
+    //const playlistId = '3o60YYFMgopRPOXOYxpkTz'; //  Tim;
+    //const playlistId = '7gobrIxFHBcPKlZfRYRBN1'; //Bean
+    //const playlistId = '5syAOZdtRs7vk82rzYfq1R'; //Ed
+    //const playlistId = '3gS4Gq1iv442Dp8NPkS888';
+    const playlistId = '3V1tvYLZ8TodrWzJukaZzL'; //Phil
+    //const playlistId = '3g2AIxdNdLLcWHVOuVxBXg'; //Yakop
+    //open.spotify.com/playlist/3V1tvYLZ8TodrWzJukaZzL?si=ab3772b9e0074f31
+    //open.spotify.com/playlist/3gS4Gq1iv442Dp8NPkS888?si=74d291d0042e4107
+    //open.spotify.com/playlist/5syAOZdtRs7vk82rzYfq1R?si=b4f61174a92145b9
+    //open.spotify.com/playlist/7gobrIxFHBcPKlZfRYRBN1?si=f26d3c104f794a1e
+    //open.spotify.com/playlist/3o60YYFMgopRPOXOYxpkTz?si=c3680eb2ab144747
+    getPlaylistDetails(playlistId)
+      .then(async (artistIds: string[]) => {
         try {
-          getArtistDetails(bearer, artistIds).then(
+          getArtistDetails(artistIds).then(
             async (artistDetails: ArtistDetailsType[]) => {
               const topTracksPromises = artistDetails.map(
                 async (artist: ArtistDetailsType) => {
-                  return await getTopTracks(bearer, artist.id);
+                  return await getTopTracks(artist);
                 }
               );
 
               const topTracks = await Promise.all(topTracksPromises);
-              console.log('Top Tracks:', topTracks);
+              return res.json({
+                answer: '',
+                data: topTracks,
+              });
             }
           );
         } catch (error) {
@@ -57,9 +76,7 @@ const askQuestion = async (
 
     console.log('Response:', response);
     */
-    return res.json({
-      answer: 'This is a test response',
-    });
+
     // return res.json({ answer: response });
   } catch (error) {
     next(error);

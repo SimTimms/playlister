@@ -1,4 +1,4 @@
-import redisClient from "../redisClient";
+import redisClient from '../redisClient';
 
 const setCachedData = async (
   key: string,
@@ -6,7 +6,7 @@ const setCachedData = async (
   ttl: number
 ): Promise<void> => {
   if (!key || !value || !ttl) {
-    console.warn(" key, value or TTL not defined.");
+    console.warn(' key, value or TTL not defined.', key, value, ttl);
     return;
   }
   const redis = await redisClient(
