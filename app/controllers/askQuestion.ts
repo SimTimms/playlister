@@ -11,9 +11,6 @@ interface AskQuestionRequest extends Request {
   };
 }
 
-const bearer =
-  'BQC09Zg4UNOKMfs8SL0aFHcQ9Ktmrqfy4Z-zrX8jCeLztxzI68Sy6cw7n1InGITgZ_1H81kkx_BO7pyOCirg9Blv2Z_NAy8qtwXXR86tUJtYCExNFa5h02voKK-qLiOX3CJ_Zip3B6s';
-
 const askQuestion = async (
   req: AskQuestionRequest,
   res: Response,
