@@ -16,10 +16,6 @@ const askQuestion = async (
   res: Response,
   next: NextFunction
 ) => {
-  const client = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
   try {
     //https://open.spotify.com/playlist/4z56A77P0onHJOgItRGR2W?si=f1f56fe26d484290
     // const playlistId = '4z56A77P0onHJOgItRGR2W'; //  Luke;
