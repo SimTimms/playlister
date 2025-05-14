@@ -2,7 +2,7 @@ import { getCachedData } from '../redis/helpers';
 import { setCachedData } from '../redis/helpers';
 import getBearer from './getBearerToken';
 
-const CACHE_EXPIRATION = 600;
+const CACHE_EXPIRATION = 1800;
 
 type ArtistType = string;
 
